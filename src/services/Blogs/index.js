@@ -18,7 +18,7 @@ const getBlogs = () => JSON.parse(fs.readFileSync(blogsJSONPath));
 const writeBlogs = (content) =>
   fs.writeFileSync(blogsJSONPath, JSON.stringify(content));
 
-blogsRouter.post("/", (req, res, next) => {
+blogsRouter.post("/", blogsValidationMiddleware, (req, res, next) => {
   try {
     const errorsList = validationResult(req);
     if (!errorsList.isEmpty()) {
@@ -63,7 +63,7 @@ blogsRouter.get("/:blogId", (req, res, next) => {
   }
 });
 
-blogsRouter.put("/:blogId", (req, res, next) => {
+blogsRouter.put("/:blogId", blogsValidationMiddleware, (req, res, next) => {
   try {
     const errorsList = validationResult(req);
     if (!errorsList.isEmpty()) {
