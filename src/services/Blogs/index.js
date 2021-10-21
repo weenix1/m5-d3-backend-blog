@@ -7,6 +7,8 @@ import createHttpError from "http-errors";
 import { validationResult } from "express-validator";
 import { blogsValidationMiddleware } from "./validation.js";
 import { getBlogs, writeBlogs, saveBlogsPictures } from "../../lib/fs-tools.js";
+import multer from "multer";
+/* import { saveBlogsPictures } from "../../lib/fs-tools.js"; */
 
 const blogsRouter = express.Router();
 
@@ -19,22 +21,55 @@ const getBlogs = () => JSON.parse(fs.readFileSync(blogsJSONPath));
 const writeBlogs = (content) =>
   fs.writeFileSync(blogsJSONPath, JSON.stringify(content)); */
 
-blogsRouter.post("/", blogsValidationMiddleware, async (req, res, next) => {
-  try {
-    const errorsList = validationResult(req);
-    if (!errorsList.isEmpty()) {
-      next(createHttpError(400, { errorsList }));
-    } else {
-      const newBlog = { ...req.body, createdAt: new Date(), _id: uniqid() };
-      const blogs = await getBlogs();
-      blogs.push(newBlog);
-      await writeBlogs(blogs);
-      res.status(201).send({ id: newBlog.id });
+blogsRouter.post(
+  "/multipleUpload",
+  multer().array("picture"),
+  blogsValidationMiddleware,
+  async (req, res, next) => {
+    try {
+      const errorsList = validationResult(req);
+      if (!errorsList.isEmpty()) {
+        next(createHttpError(400, { errorsList }));
+      } else {
+        const newBlog = { ...req.body, createdAt: new Date(), _id: uniqid() };
+        const blogs = await getBlogs();
+        blogs.push(newBlog);
+        const arrayOfPromises = req.files.map((file) =>
+          saveBlogsPictures(file.originalname, file.buffer)
+        );
+        await Promise.all(arrayOfPromises);
+        await writeBlogs(blogs);
+
+        res.status(201).send({ id: newBlog.id });
+      }
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-});
+);
+
+blogsRouter.post(
+  "/:blogId/uploadSingle",
+  blogsValidationMiddleware,
+  async (req, res, next) => {
+    try {
+      const errorsList = validationResult(req);
+      if (!errorsList.isEmpty()) {
+        next(createHttpError(400, { errorsList }));
+      } else {
+        const newBlog = { ...req.body, createdAt: new Date(), _id: uniqid() };
+        const blogs = await getBlogs();
+        blogs.push(newBlog);
+        await saveBlogsPictures(req.file.originalname, req.file.buffer);
+        console.log(saveBlogsPictures);
+        await writeBlogs(blogs);
+        res.status(201).send({ id: newBlog.id });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 blogsRouter.get("/", async (req, res, next) => {
   try {
@@ -42,17 +77,17 @@ blogsRouter.get("/", async (req, res, next) => {
     if (!errorsList.isEmpty()) {
       next(createHttpError(404, { errorsList }));
     } else {
-    console.log(req.body);
-    const blogs = await getBlogs();
-    console.log(blogs);
-    if (req.query && req.query.title) {
-      const filteredBlogs = blogs.filter(
-        (blog) => blog.title === req.query.title
-      );
-      res.send(filteredBlogs);
+      console.log(req.body);
+      const blogs = await getBlogs();
+      console.log(blogs);
+      if (req.query && req.query.title) {
+        const filteredBlogs = blogs.filter(
+          (blog) => blog.title === req.query.title
+        );
+        res.send(filteredBlogs);
+      }
+      res.send(blogs);
     }
-    res.send(blogs);
-  }
   } catch (error) {
     next(error);
   }
@@ -77,7 +112,8 @@ blogsRouter.get("/:blogId", async (req, res, next) => {
 });
 
 blogsRouter.put(
-  "/:blogId",
+  "/:blogId/uploadSingle",
+  multer().single("picture"),
   blogsValidationMiddleware,
   async (req, res, next) => {
     try {
@@ -85,16 +121,18 @@ blogsRouter.put(
       if (!errorsList.isEmpty()) {
         next(createHttpError(400, { errorsList }));
       } else {
-        const blogs = await getBooks();
+        const blogs = await getBlogs();
 
         const index = blogs.findIndex((blog) => blog._id === req.params.blogId);
 
-        const blogToModify = books[index];
+        const blogToModify = blogs[index];
         const updatedFields = req.body;
 
         const updatedBlog = { ...blogToModify, ...updatedFields };
 
         blogs[index] = updatedBlog;
+        await saveBlogsPictures(req.file.originalname, req.file.buffer);
+        console.log(saveBlogsPictures);
 
         await writeBlogs(blogs);
 
