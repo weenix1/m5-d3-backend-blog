@@ -24,7 +24,7 @@ blogsRouter.post("/", (req, res, next) => {
     if (!errorsList.isEmpty()) {
       next(createHttpError(400, { errorsList }));
     } else {
-      const newBlog = { ...req.body, createdAt: new Date(), id: uniqid() };
+      const newBlog = { ...req.body, createdAt: new Date(), _id: uniqid() };
       const blogs = getBlogs();
       blogs.push(newBlog);
       writeBlogs(blogs);
@@ -44,14 +44,15 @@ blogsRouter.get("/", (req, res, next) => {
     next(error);
   }
 });
+
 blogsRouter.get("/:blogId", (req, res, next) => {
   try {
     const blogs = getBlogs();
 
-    const index = blogs.findIndex((b) => b._id === req.params.blogId);
-    const blog = blogs[index];
-    /*   const blog = blogs.find((b) => b._id === req.params.blogId); */
-    console.log(blogs[0]._id);
+    /* const index = blogs.findIndex((b) => b._id === req.params.blogId);
+    const blog = blogs[index]; */
+    const blog = blogs.find((b) => b._id === req.params.blogId);
+    /*    console.log(blogs[0]._id); */
     if (blog) {
       res.send(blog);
     } else {
@@ -64,10 +65,30 @@ blogsRouter.get("/:blogId", (req, res, next) => {
 
 blogsRouter.put("/:blogId", (req, res, next) => {
   try {
+    const errorsList = validationResult(req);
+    if (!errorsList.isEmpty()) {
+      next(createHttpError(400, { errorsList }));
+    } else {
+      const blogs = getBooks();
+
+      const index = blogs.findIndex((blog) => blog._id === req.params.blogId);
+
+      const blogToModify = books[index];
+      const updatedFields = req.body;
+
+      const updatedBlog = { ...blogToModify, ...updatedFields };
+
+      blogs[index] = updatedBlog;
+
+      writeBlogs(blogs);
+
+      res.send(updatedBlog);
+    }
   } catch (error) {
     next(error);
   }
 });
+
 blogsRouter.delete("/:blogId", (req, res, next) => {
   try {
   } catch (error) {
