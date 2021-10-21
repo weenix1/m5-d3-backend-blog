@@ -38,6 +38,10 @@ blogsRouter.post("/", blogsValidationMiddleware, async (req, res, next) => {
 
 blogsRouter.get("/", async (req, res, next) => {
   try {
+    const errorsList = validationResult(req);
+    if (!errorsList.isEmpty()) {
+      next(createHttpError(404, { errorsList }));
+    } else {
     console.log(req.body);
     const blogs = await getBlogs();
     console.log(blogs);
@@ -48,6 +52,7 @@ blogsRouter.get("/", async (req, res, next) => {
       res.send(filteredBlogs);
     }
     res.send(blogs);
+  }
   } catch (error) {
     next(error);
   }
