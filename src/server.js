@@ -8,8 +8,12 @@ import {
   notFoundHandler,
 } from "./errorsHandler.js";
 import blogsRouter from "./services/Blogs/index.js";
+import { join } from "path";
+
+const publicFolderPath = join(process.cwd(), "./public");
 
 const server = express();
+server.use(express.static(publicFolderPath));
 
 server.use(express.json());
 server.use(cors());
