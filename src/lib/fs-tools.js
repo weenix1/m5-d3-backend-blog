@@ -15,6 +15,9 @@ export const writeBlogs = (content) => writeJSON(blogsJSONPath, content);
 export const saveBlogsPictures = (filename, contentAsButter) =>
   writeFile(join(publicFolderPath, filename), contentAsButter);
 
+/* export const savedBlogFolder = (filename) =>
+  writeFile(join(publicFolderPath, filename)); */
+
 /* export const uploadFile = (req, res, next) => {
   try {
     const { originalname, buffer } = req.file;
