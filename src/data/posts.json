@@ -1,10 +1,46 @@
 [
   {
-    "title": "no way",
-    "category": "move this way",
-    "content": "new love for u",
-    "cover": "2020-06-23 (6).png",
-    "createdAt": "2021-10-22T12:37:18.184Z",
-    "_id": "1be154e9gkv2cymzt"
+    "author": {
+      "name": "hilary",
+      "avatar": "https://images.unsplash.com/photo-1634790769448-0f6c0d2c5601?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1528&q=80"
+    },
+    "comments": [],
+    "createdAt": "2021-10-22T19:24:25.784Z",
+    "_id": "1be154chwkv2ri7g9",
+    "category": "",
+    "title": "",
+    "content": "",
+    "cover": "http://localhost:3001/img/blogs/1be154chwkv2ri7g9.jfif",
+    "updatedAt": "2021-10-22T19:24:43.622Z"
+  },
+  {
+    "title": "no way ",
+    "category": "Category 3",
+    "content": "<div class='py-5 blog-content'><p>As many of you do, on March 8 I wake up and grab my phone.</p><p>First, I call my grandmother. Then I call my mom. Then I call my aunties and a number of women that I love to bits that have had an outsized impact on my life.</p><p>I called them today but unlike every other day, I had special news to share. &nbsp;I told them that we too are doing our (small) part to make sure the next generation of women have a better opportunity in this world.</p><p>I'm excited to be announcing <strong>The W Pledge</strong>, a new initiative to help close the gender gap.</p><p>We're the first contributors in pledging <strong>€1M in scholarships</strong> - to start.</p><p>We want to see more women in our classes and in tech companies in general and we're ready to do <em>whatever it takes</em> to reach that goal.</p><p>We took the first leap but are looking to add more partner companies that also care about closing the gap and are willing to put their money where their mouths are.</p><p>Why are we doing this, you may ask. Is this some 'marketing stunt'? Is this self-serving? Or is this us doing 'good'?</p><p>It's all of the above. It's just the right thing for a business like us to do in 2021.</p><p>If you know me, you know that I don't belong to the 'woke' culture. &nbsp;I do not like the endless competition of 'wokeness'. Or weaponising social issues to grow our own status by showing 'purity'. The world is messy. I am messy.</p><p>On woke culture, my favorite quote is from former <strong>POTUS, Barack Obama</strong>:</p><blockquote>'That is not activism, that is not bringing about change. If all you're doing is casting stones, you are probably not going to get that far'.</blockquote><p>That is why we also refuse the idea that we are a 'social impact business'. That's not really a thing anymore.</p><p>In our vision, either you run a business, or you run an anti-social business.</p><p>Anti-social businesses create huge negative externalities for society and we believe that, ultimately, they will pay a hefty price for that.</p><p>We don't want to do that: it's in our best interest to strive to build a business that <em>does good and does well.</em></p><p>If you're interested, you can <a href='https://striveschool.typeform.com/to/V0VY5N6F'>pre-apply for the <em>W Pledge</em> scholarship here</a>. We'll reach out back as soon as possible.</p><p>Now, back to work.</p><p>T</p><p>P.S.: if you're interested in helping us train more women and close the gender gap faster, drop me an email at tobia at strive dot school. We are looking for like-minded companies that want to <em>act</em>.</p></div>\\",
+    "cover": "http://localhost:3001/img/blogs/photo4.jfif",
+    "author": {},
+    "comments": [],
+    "createdAt": "2021-10-22T20:42:32.955Z",
+    "_id": "1be154i5gkv2uao3g"
+  },
+  {
+    "title": "no way ",
+    "category": "Category 3",
+    "content": "<div class='py-5 blog-content'><p>As many of you do, on March 8 I wake up and grab my phone.</p><p>First, I call my grandmother. Then I call my mom. Then I call my aunties and a number of women that I love to bits that have had an outsized impact on my life.</p><p>I called them today but unlike every other day, I had special news to share. &nbsp;I told them that we too are doing our (small) part to make sure the next generation of women have a better opportunity in this world.</p><p>I'm excited to be announcing <strong>The W Pledge</strong>, a new initiative to help close the gender gap.</p><p>We're the first contributors in pledging <strong>€1M in scholarships</strong> - to start.</p><p>We want to see more women in our classes and in tech companies in general and we're ready to do <em>whatever it takes</em> to reach that goal.</p><p>We took the first leap but are looking to add more partner companies that also care about closing the gap and are willing to put their money where their mouths are.</p><p>Why are we doing this, you may ask. Is this some 'marketing stunt'? Is this self-serving? Or is this us doing 'good'?</p><p>It's all of the above. It's just the right thing for a business like us to do in 2021.</p><p>If you know me, you know that I don't belong to the 'woke' culture. &nbsp;I do not like the endless competition of 'wokeness'. Or weaponising social issues to grow our own status by showing 'purity'. The world is messy. I am messy.</p><p>On woke culture, my favorite quote is from former <strong>POTUS, Barack Obama</strong>:</p><blockquote>'That is not activism, that is not bringing about change. If all you're doing is casting stones, you are probably not going to get that far'.</blockquote><p>That is why we also refuse the idea that we are a 'social impact business'. That's not really a thing anymore.</p><p>In our vision, either you run a business, or you run an anti-social business.</p><p>Anti-social businesses create huge negative externalities for society and we believe that, ultimately, they will pay a hefty price for that.</p><p>We don't want to do that: it's in our best interest to strive to build a business that <em>does good and does well.</em></p><p>If you're interested, you can <a href='https://striveschool.typeform.com/to/V0VY5N6F'>pre-apply for the <em>W Pledge</em> scholarship here</a>. We'll reach out back as soon as possible.</p><p>Now, back to work.</p><p>T</p><p>P.S.: if you're interested in helping us train more women and close the gender gap faster, drop me an email at tobia at strive dot school. We are looking for like-minded companies that want to <em>act</em>.</p></div>\\",
+    "cover": "http://localhost:3001/img/blogs/photo7.jfif",
+    "author": {},
+    "comments": [],
+    "createdAt": "2021-10-22T20:59:57.933Z",
+    "_id": "1be154ghwkv2ux2en"
+  },
+  {
+    "title": "way ",
+    "category": "Category 3",
+    "content": "<div class='py-5 blog-content'><p>As many of you do, on March 8 I wake up and grab my phone.</p><p>First, I call my grandmother. Then I call my mom. Then I call my aunties and a number of women that I love to bits that have had an outsized impact on my life.</p><p>I called them today but unlike every other day, I had special news to share. &nbsp;I told them that we too are doing our (small) part to make sure the next generation of women have a better opportunity in this world.</p><p>I'm excited to be announcing <strong>The W Pledge</strong>, a new initiative to help close the gender gap.</p><p>We're the first contributors in pledging <strong>€1M in scholarships</strong> - to start.</p><p>We want to see more women in our classes and in tech companies in general and we're ready to do <em>whatever it takes</em> to reach that goal.</p><p>We took the first leap but are looking to add more partner companies that also care about closing the gap and are willing to put their money where their mouths are.</p><p>Why are we doing this, you may ask. Is this some 'marketing stunt'? Is this self-serving? Or is this us doing 'good'?</p><p>It's all of the above. It's just the right thing for a business like us to do in 2021.</p><p>If you know me, you know that I don't belong to the 'woke' culture. &nbsp;I do not like the endless competition of 'wokeness'. Or weaponising social issues to grow our own status by showing 'purity'. The world is messy. I am messy.</p><p>On woke culture, my favorite quote is from former <strong>POTUS, Barack Obama</strong>:</p><blockquote>'That is not activism, that is not bringing about change. If all you're doing is casting stones, you are probably not going to get that far'.</blockquote><p>That is why we also refuse the idea that we are a 'social impact business'. That's not really a thing anymore.</p><p>In our vision, either you run a business, or you run an anti-social business.</p><p>Anti-social businesses create huge negative externalities for society and we believe that, ultimately, they will pay a hefty price for that.</p><p>We don't want to do that: it's in our best interest to strive to build a business that <em>does good and does well.</em></p><p>If you're interested, you can <a href='https://striveschool.typeform.com/to/V0VY5N6F'>pre-apply for the <em>W Pledge</em> scholarship here</a>. We'll reach out back as soon as possible.</p><p>Now, back to work.</p><p>T</p><p>P.S.: if you're interested in helping us train more women and close the gender gap faster, drop me an email at tobia at strive dot school. We are looking for like-minded companies that want to <em>act</em>.</p></div>\\",
+    "cover": "http://localhost:3001/img/blogs/2020-06-23 (2).png",
+    "author": {},
+    "comments": [],
+    "createdAt": "2021-10-22T21:02:40.354Z",
+    "_id": "1be154ghwkv2v0jqa"
   }
 ]

@@ -55,6 +55,28 @@ blogsRouter.post(
   }
 );
 
+/* blogsRouter.post("/:blogId/comment", async (req, res, next) => {
+  try {
+    const { text, userName } = req.body;
+
+    const comment = { id: uniqid(), text, userName };
+
+    const newComment = {
+      ...req.body,
+      comments: comment,
+      createdAt: new Date(),
+      _id: req.params.blogId,
+    };
+    const blogs = await getBlogs();
+    blogs.push(newComment);
+
+    await writeBlogs(blogs);
+    res.status(201).send({ id: newComment._id });
+  } catch (error) {
+    next(error);
+  }
+}); */
+
 blogsRouter.post(
   "/uploadSingle",
   multer().single("picture"),
@@ -66,10 +88,12 @@ blogsRouter.post(
       if (!errorsList.isEmpty()) {
         next(createHttpError(400, { errorsList }));
       } else {
-        const picture = req.file.originalname;
+        const pictureUrl = `http://localhost:3001/img/blogs/${req.file.originalname}`;
         const newBlog = {
           ...req.body,
-          cover: picture,
+          cover: pictureUrl,
+          author: {},
+          comments: [],
           createdAt: new Date(),
           _id: uniqid(),
         };
@@ -77,6 +101,40 @@ blogsRouter.post(
         blogs.push(newBlog);
         await saveBlogsPictures(req.file.originalname, req.file.buffer);
         console.log(saveBlogsPictures);
+        await writeBlogs(blogs);
+        res.status(201).send(newBlog /* { id: newBlog._id } */);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+blogsRouter.post(
+  "/",
+  multer().single("picture"),
+  /*  blogsValidationMiddleware, */
+  async (req, res, next) => {
+    try {
+      const { name, avatar } = req.body;
+
+      const author = { name, avatar };
+
+      console.log(req.file);
+      const errorsList = validationResult(req);
+      if (!errorsList.isEmpty()) {
+        next(createHttpError(400, { errorsList }));
+      } else {
+        const newBlog = {
+          /*  ...req.body, */
+          author,
+          comments: [],
+          createdAt: new Date(),
+          _id: uniqid(),
+        };
+        const blogs = await getBlogs();
+        blogs.push(newBlog);
+
         await writeBlogs(blogs);
         res.status(201).send({ id: newBlog._id });
       }
@@ -164,7 +222,6 @@ blogsRouter.put(
 blogsRouter.put(
   "/:blogId/cover",
   multer().single("picture"),
-  /*  blogsValidationMiddleware, */
   async (req, res, next) => {
     try {
       const errorsList = validationResult(req);
@@ -183,6 +240,9 @@ blogsRouter.put(
 
         const updatedBlog = {
           ...blogToModify,
+          category: "",
+          title: "",
+          content: "",
           cover: imageUrl,
           updatedAt: new Date(),
           _id: req.params.blogId,
@@ -203,48 +263,56 @@ blogsRouter.put(
   }
 );
 
-blogsRouter.put(
-  "/:blogId/comment",
+blogsRouter.put("/:blogId/comment", async (req, res, next) => {
+  try {
+    const { text, userName } = req.body;
 
-  blogsValidationMiddleware,
-  async (req, res, next) => {
-    try {
-      const errorsList = validationResult(req);
-      if (!errorsList.isEmpty()) {
-        next(createHttpError(400, { errorsList }));
-      } else {
-        const { text, userName } = req.body;
+    const comment = { id: uniqid(), text, userName, createdAt: new Date() };
 
-        const comment = { id: uniqid(), text, userName, createdAt: new Date() };
+    const blogs = await getBlogs();
 
-        const blogs = await getBlogs();
+    const index = blogs.findIndex((blog) => blog._id === req.params.blogId);
 
-        const index = blogs.findIndex((blog) => blog._id === req.params.blogId);
+    blogs[index].comments = blogs[index].comments || [];
 
-        blogs[index].comments = blogs[index].comments || [];
+    const blogToModify = blogs[index];
 
-        const blogToModify = blogs[index];
+    blogToModify.comments.push(comment);
 
-        const updatedFields = req.body;
+    blogs[index] = blogToModify;
 
-        const updatedBlog = {
-          ...blogToModify,
-          ...updatedFields,
-          comments: [...blogs[index].comments, comment],
-          _id: req.params.blogId,
-        };
+    await writeBlogs(blogs);
 
-        blogs[index] = updatedBlog;
-
-        await writeBlogs(blogs);
-
-        res.send(updatedBlog);
-      }
-    } catch (error) {
-      next(error);
-    }
+    res.send(comment);
+  } catch (error) {
+    next(error);
   }
-);
+});
+
+/* blogsRouter.put("/:blogId/author", async (req, res, next) => {
+  try {
+    const { name, avatar } = req.body;
+
+    const author = { name, avatar };
+
+    const blogs = await getBlogs();
+
+    const index = blogs.findIndex((blog) => blog._id === req.params.blogId);
+
+    const newAuthor = {
+      ...req.body,
+      author,
+    };
+
+    blogs[index] = newAuthor;
+
+    await writeBlogs(blogs);
+
+    res.send(newAuthor);
+  } catch (error) {
+    next(error);
+  }
+}); */
 
 blogsRouter.delete("/:blogId", async (req, res, next) => {
   try {
