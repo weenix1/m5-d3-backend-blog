@@ -80,30 +80,27 @@ blogsRouter.post(
 blogsRouter.post(
   "/uploadSingle",
   multer().single("picture"),
-  blogsValidationMiddleware,
+  // blogsValidationMiddleware,
   async (req, res, next) => {
     try {
-      console.log(req.file);
-      const errorsList = validationResult(req);
-      if (!errorsList.isEmpty()) {
-        next(createHttpError(400, { errorsList }));
-      } else {
-        const pictureUrl = `http://localhost:3001/img/blogs/${req.file.originalname}`;
-        const newBlog = {
-          ...req.body,
-          cover: pictureUrl,
-          author: {},
-          comments: [],
-          createdAt: new Date(),
-          _id: uniqid(),
-        };
-        const blogs = await getBlogs();
-        blogs.push(newBlog);
-        await saveBlogsPictures(req.file.originalname, req.file.buffer);
-        console.log(saveBlogsPictures);
-        await writeBlogs(blogs);
-        res.status(201).send(newBlog /* { id: newBlog._id } */);
-      }
+      console.log("REQ FILE ", req.file);
+      //console.log(req);
+
+      const pictureUrl = `http://localhost:3001/img/blogs/${req.file.originalname}`;
+      const newBlog = {
+        ...req.body,
+        cover: pictureUrl,
+        author: {},
+        comments: [],
+        createdAt: new Date(),
+        _id: uniqid(),
+      };
+      const blogs = await getBlogs();
+      blogs.push(newBlog);
+      await saveBlogsPictures(req.file.originalname, req.file.buffer);
+      console.log(saveBlogsPictures);
+      await writeBlogs(blogs);
+      res.status(201).send(newBlog /* { id: newBlog._id } */);
     } catch (error) {
       next(error);
     }
@@ -224,36 +221,32 @@ blogsRouter.put(
   multer().single("picture"),
   async (req, res, next) => {
     try {
-      const errorsList = validationResult(req);
-      if (!errorsList.isEmpty()) {
-        next(createHttpError(400, { errorsList }));
-      } else {
-        const blogs = await getBlogs();
+      const blogs = await getBlogs();
 
-        const index = blogs.findIndex((blog) => blog._id === req.params.blogId);
+      const index = blogs.findIndex((blog) => blog._id === req.params.blogId);
 
-        const blogToModify = blogs[index];
-        /* const updatedFields = req.body; */
-        const extension = path.extname(req.file.originalname);
+      const blogToModify = blogs[index];
+      /* const updatedFields = req.body; */
+      console.log("REQ FILE: ", req.file);
+      const extension = path.extname(req.file.originalname);
 
-        const imageUrl = `http://localhost:3001/img/blogs/${req.params.blogId}${extension}`;
+      const imageUrl = `http://localhost:3001/img/blogs/${req.params.blogId}${extension}`;
 
-        const updatedBlog = {
-          ...blogToModify,
-          category: "",
-          title: "",
-          content: "",
-          cover: imageUrl,
-          updatedAt: new Date(),
-          _id: req.params.blogId,
-        };
+      const updatedBlog = {
+        ...blogToModify,
+        category: "",
+        title: "",
+        content: "",
+        cover: imageUrl,
+        updatedAt: new Date(),
+        _id: req.params.blogId,
+      };
 
-        blogs[index] = updatedBlog;
-        await saveBlogsPictures(req.params.blogId + extension, req.file.buffer);
-        await writeBlogs(blogs);
+      blogs[index] = updatedBlog;
+      await saveBlogsPictures(req.params.blogId + extension, req.file.buffer);
+      await writeBlogs(blogs);
 
-        res.send(updatedBlog);
-      }
+      res.send(updatedBlog);
     } catch (error) {
       /* next(error); */
 
