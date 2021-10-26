@@ -15,9 +15,18 @@ import {
 import multer from "multer";
 import path from "path";
 import fs from "fs-extra";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 /* import { saveBlogsPictures } from "../../lib/fs-tools.js"; */
 
 const blogsRouter = express.Router();
+
+const cloudinaryStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "hilary-blogs",
+  },
+});
 
 /* const blogsJSONPath = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -99,6 +108,35 @@ blogsRouter.post(
       blogs.push(newBlog);
       await saveBlogsPictures(req.file.originalname, req.file.buffer);
       console.log(saveBlogsPictures);
+      await writeBlogs(blogs);
+      res.status(201).send(newBlog /* { id: newBlog._id } */);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+blogsRouter.post(
+  "/uploadCloudinary",
+  multer({ storage: cloudinaryStorage }).single("picture"),
+  async (req, res, next) => {
+    try {
+      console.log("REQ FILE ", req.file);
+      //console.log(req);
+
+      const pictureUrl = `http://localhost:3001/img/blogs/${req.file.originalname}`;
+      const newBlog = {
+        ...req.body,
+        cover: pictureUrl,
+        author: {},
+        comments: [],
+        createdAt: new Date(),
+        _id: uniqid(),
+      };
+      const blogs = await getBlogs();
+      blogs.push(newBlog);
+      /*   await saveBlogsPictures(req.file.originalname, req.file.buffer);
+      console.log(saveBlogsPictures); */
       await writeBlogs(blogs);
       res.status(201).send(newBlog /* { id: newBlog._id } */);
     } catch (error) {
