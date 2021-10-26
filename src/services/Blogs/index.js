@@ -294,7 +294,7 @@ blogsRouter.put(
   }
 );
 
-/* blogsRouter.post("/:blogId/comment", async (req, res, next) => {
+blogsRouter.post("/:blogId/comments", async (req, res, next) => {
   try {
     const { text, userName } = req.body;
 
@@ -324,9 +324,9 @@ blogsRouter.put(
   } catch (error) {
     next(error);
   }
-}); */
+});
 
-blogPostRouter.post(
+/* blogsRouter.post(
   "/:blogId/comments",
 
   async (req, res, next) => {
@@ -352,7 +352,7 @@ blogPostRouter.post(
       next(error);
     }
   }
-);
+); */
 
 blogsRouter.put("/:blogId/comment", async (req, res, next) => {
   try {
