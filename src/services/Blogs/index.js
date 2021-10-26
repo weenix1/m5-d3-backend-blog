@@ -299,7 +299,6 @@ blogsRouter.post("/:blogId/comments", async (req, res, next) => {
     const { text, userName } = req.body;
 
     const comment = {
-      ...req.body,
       id: uniqid(),
       text,
       userName,
