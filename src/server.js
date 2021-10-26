@@ -41,6 +41,7 @@ server.use(notFoundHandler);
 server.use(genericErrorHandler);
 
 const port = process.env.PORT;
+console.log(process.env);
 console.table(listEndpoints(server));
 
 server.listen(port, () => {
