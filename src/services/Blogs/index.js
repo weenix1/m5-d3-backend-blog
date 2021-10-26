@@ -294,6 +294,66 @@ blogsRouter.put(
   }
 );
 
+/* blogsRouter.post("/:blogId/comment", async (req, res, next) => {
+  try {
+    const { text, userName } = req.body;
+
+    const comment = {
+      ...req.body,
+      id: uniqid(),
+      text,
+      userName,
+      createdAt: new Date(),
+    };
+
+    const blogs = await getBlogs();
+
+    const index = blogs.findIndex((blog) => blog._id === req.params.blogId);
+
+    blogs[index].comments = blogs[index].comments || [];
+
+    const blogToModify = blogs[index];
+
+    blogToModify.comments.push(comment);
+
+    blogs[index] = blogToModify;
+
+    await writeBlogs(blogs);
+
+    res.send(comment);
+  } catch (error) {
+    next(error);
+  }
+}); */
+
+blogPostRouter.post(
+  "/:blogId/comments",
+
+  async (req, res, next) => {
+    try {
+      const { text, userName } = req.body;
+
+      const comment = { id: uniqid(), text, userName, createdAt: new Date() };
+
+      const blogs = await db.getBlogs();
+
+      const index = blogs.findIndex((b) => b.id === req.params.blogId);
+
+      blogs[index].comments = blogs[index].comments || [];
+
+      const editedPost = blogs[index];
+      editedPost.comments.push(comment);
+
+      blogs[index] = editedPost;
+
+      await db.writeBlogs(blogs);
+      res.send(editedPost);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 blogsRouter.put("/:blogId/comment", async (req, res, next) => {
   try {
     const { text, userName } = req.body;
