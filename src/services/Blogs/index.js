@@ -24,7 +24,7 @@ const blogsRouter = express.Router();
 const cloudinaryStorage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "hilary-blogs",
+    folder: "weenix-blogs",
   },
 });
 
@@ -128,8 +128,8 @@ blogsRouter.post(
       const newBlog = {
         ...req.body,
         cover: pictureUrl,
-        author: {},
-        comments: [],
+        /*   author: {},
+        comments: [], */
         createdAt: new Date(),
         _id: uniqid(),
       };
