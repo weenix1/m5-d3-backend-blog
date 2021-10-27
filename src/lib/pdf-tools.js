@@ -15,7 +15,11 @@ export const getPDFReadableStream = (data) => {
   const printer = new PdfPrinter(fonts);
 
   const docDefinition = {
-    content: [`${data.content}`],
+    content: [
+      { text: `${data.title}` },
+      { text: `${data.content}` },
+      { text: `${data.author}` },
+    ],
     defaultStyle: {
       font: "Helvetica",
     },
