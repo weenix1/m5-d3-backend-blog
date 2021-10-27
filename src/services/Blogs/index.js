@@ -71,7 +71,7 @@ blogsRouter.get("/:blogId/downloadPDF", async (req, res, next) => {
 
     res.setHeader("Content-Disposition", "attachment; filename=blogPost.pdf"); // This header tells the browser to do not open the file, but to download it
 
-    const source = getPDFReadableStream(blog); // PDF READABLE STREAM
+    const source = await getPDFReadableStream(blog); // PDF READABLE STREAM
     const destination = res;
 
     pipeline(source, destination, (err) => {
