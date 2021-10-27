@@ -190,6 +190,42 @@ blogsRouter.post(
   }
 );
 
+blogsRouter.put(
+  "/:blogId/uploadCloudinary",
+  multer({ storage: cloudinaryStorage }).single("picture"),
+  async (req, res, next) => {
+    try {
+      console.log("REQ FILE ", req.file);
+
+      const blogs = await getBlogs();
+
+      const index = blogs.findIndex((blog) => blog._id === req.params.blogId);
+      //console.log(req);
+      const blogToModify = blogs[index];
+      const updatedFields = req.body;
+
+      const pictureUrl = req.file.path;
+      const updatedBlog = {
+        ...blogToModify,
+        ...updatedFields,
+        cover: pictureUrl,
+
+        createdAt: new Date(),
+        _id: req.params.blogId,
+      };
+
+      blogs[index] = updatedBlog;
+
+      /*   await saveBlogsPictures(req.file.originalname, req.file.buffer);
+      console.log(saveBlogsPictures); */
+      await writeBlogs(blogs);
+      res.status(201).send(updatedBlog /* { id: newBlog._id } */);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 blogsRouter.post(
   "/",
   multer().single("picture"),
