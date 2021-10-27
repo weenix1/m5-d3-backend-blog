@@ -10,13 +10,19 @@ import {
   getBlogs,
   writeBlogs,
   saveBlogsPictures,
+  getBlogsReadableStream,
   /* savedBlogFolder, */
 } from "../../lib/fs-tools.js";
+import { pipeline } from "stream";
+import { createGzip } from "zlib";
+import { getPDFReadableStream } from "../../lib/pdf-tools.js";
 import multer from "multer";
 import path from "path";
 import fs from "fs-extra";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
+
+import mine from "mime";
 /* import { saveBlogsPictures } from "../../lib/fs-tools.js"; */
 
 const blogsRouter = express.Router();
@@ -36,6 +42,45 @@ const cloudinaryStorage = new CloudinaryStorage({
 const getBlogs = () => JSON.parse(fs.readFileSync(blogsJSONPath));
 const writeBlogs = (content) =>
   fs.writeFileSync(blogsJSONPath, JSON.stringify(content)); */
+
+blogsRouter.get("/downloadJSON", async (req, res, next) => {
+  try {
+    // SOURCE (file on disk, request, ....) --> DESTINATION (file on disk, terminal, response...)
+
+    // In this example we are going to have: SOURCE (file on disk --> books.json) --> DESTINATION (response)
+
+    res.setHeader("Content-Disposition", "attachment; filename=posts.json.gz"); // This header tells the browser to do not open the file, but to download it
+
+    const source = getBlogsReadableStream();
+    const transform = createGzip();
+    const destination = res;
+
+    pipeline(source, transform, destination, (err) => {
+      if (err) next(err);
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogsRouter.get("/:blogId/downloadPDF", async (req, res, next) => {
+  try {
+    const blogs = await getBlogs();
+
+    const blog = blogs.find((b) => b._id === req.params.blogId);
+
+    res.setHeader("Content-Disposition", "attachment; filename=blogPost.pdf"); // This header tells the browser to do not open the file, but to download it
+
+    const source = getPDFReadableStream(blog); // PDF READABLE STREAM
+    const destination = res;
+
+    pipeline(source, destination, (err) => {
+      if (err) next(err);
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 blogsRouter.post(
   "/multipleUpload",
@@ -124,7 +169,7 @@ blogsRouter.post(
       console.log("REQ FILE ", req.file);
       //console.log(req);
 
-      const pictureUrl = `http://localhost:3001/img/blogs/${req.file.originalname}`;
+      const pictureUrl = req.file.path;
       const newBlog = {
         ...req.body,
         cover: pictureUrl,
@@ -423,70 +468,3 @@ blogsRouter.delete("/:blogId", async (req, res, next) => {
 });
 
 export default blogsRouter;
-
-/* blogPostRouter.post(
-  "/:blogId/uploadSingle",
-  multer().single("picture"),
-
-  async (req, res, next) => {
-    try {
-      console.log(req.file);
-      const errorList = validationResult(req);
-
-      const posts = await getBlogs();
-
-      const post = posts.find((p) => p.id === req.params.blogId);
-      if (post && req.file) {
-        const extention = path.extname(req.file.originalname);
-
-        await savePostImg(req.params.blogId + extention, req.file.buffer);
-
-        const coverUrl = http://localhost:3001/img/post/$%7Breq.params.blogId%7D$%7Bextention%7D%60;
-
-        post.cover = coverUrl;
-        const postsArray = posts.filter((p) => p.id !== req.params.blogId);
-
-        postsArray.push(post);
-
-        await writeBlogs(postsArray);
-
-        res.status(200).send("post success ");
-      } else {
-        next(createHttpError(400, { errorList }));
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-); */
-
-/* blogPostRouter.put(
-  "/:blogId/comment",
-
-  async (req, res, next) => {
-    try {
-      const { text, userName } = req.body;
-
-      const comment = { id: uniqid(), text, userName, createdAt: new Date() };
-
-      const blogs = await getBlogs();
-
-      const index = blogs.findIndex((blog) => blog.id === req.params.blogId);
-
-      blogs[index].comments = blogs[index].comments || [];
-      const editedPost = {
-        ...blogs[index],
-        ...req.body,
-        comments: [...blogs[index].comments, comment],
-        // updatedAt: new Date(),
-        id: req.params.blogId,
-      };
-      blogs[index] = editedPost;
-
-      await writeBlogs(blogs);
-      res.send(editedPost);
-    } catch (error) {
-      next(error);
-    }
-  }
-); */
