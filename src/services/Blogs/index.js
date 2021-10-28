@@ -13,8 +13,10 @@ import {
   getBlogsReadableStream,
   /* savedBlogFolder, */
 } from "../../lib/fs-tools.js";
+import { sendRegistrationEmail } from "../../lib/emails-tools.js";
 import { pipeline } from "stream";
 import { createGzip } from "zlib";
+import json2csv from "json2csv";
 import { getPDFReadableStream } from "../../lib/pdf-tools.js";
 import multer from "multer";
 import path from "path";
@@ -39,9 +41,26 @@ const cloudinaryStorage = new CloudinaryStorage({
   "posts.json"
 );
 
+
+
 const getBlogs = () => JSON.parse(fs.readFileSync(blogsJSONPath));
 const writeBlogs = (content) =>
   fs.writeFileSync(blogsJSONPath, JSON.stringify(content)); */
+
+blogsRouter.post("/register", async (req, res, next) => {
+  try {
+    // 1. Receive email address via req.body
+    const { email } = req.body;
+
+    // 2. Send email on that address
+    await sendRegistrationEmail(email);
+
+    // 3. Send ok
+    res.send("ok");
+  } catch (error) {
+    next(error);
+  }
+});
 
 blogsRouter.get("/downloadJSON", async (req, res, next) => {
   try {
@@ -53,6 +72,23 @@ blogsRouter.get("/downloadJSON", async (req, res, next) => {
 
     const source = getBlogsReadableStream();
     const transform = createGzip();
+    const destination = res;
+
+    pipeline(source, transform, destination, (err) => {
+      if (err) next(err);
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogsRouter.get("/downloadCSV", (req, res, next) => {
+  try {
+    res.setHeader("Content-Disposition", "attachment; filename=blogs.csv");
+    const source = getBlogsReadableStream();
+    const transform = new json2csv.Transform({
+      fields: ["_id", "title", "category"],
+    });
     const destination = res;
 
     pipeline(source, transform, destination, (err) => {
