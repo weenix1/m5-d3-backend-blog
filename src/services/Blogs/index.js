@@ -62,6 +62,29 @@ blogsRouter.post("/register", async (req, res, next) => {
   }
 });
 
+blogsRouter.post("/registerPDF", async (req, res, next) => {
+  try {
+    // 1. Receive email address via req.body
+    const { email } = req.body;
+    res.setHeader("Content-Disposition", "attachment; filename=blogPost.pdf"); // This header tells the browser to do not open the file, but to download it
+
+    const source = await sendRegistrationEmail();
+    const destination = res;
+
+    pipeline(source, destination, (err) => {
+      if (err) next(err);
+    });
+
+    // 2. Send email on that address
+    await sendRegistrationEmail(email);
+
+    // 3. Send ok
+    res.send("ok");
+  } catch (error) {
+    next(error);
+  }
+});
+
 blogsRouter.get("/downloadJSON", async (req, res, next) => {
   try {
     // SOURCE (file on disk, request, ....) --> DESTINATION (file on disk, terminal, response...)
