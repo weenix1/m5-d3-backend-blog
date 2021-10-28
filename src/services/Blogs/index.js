@@ -17,7 +17,7 @@ import { sendRegistrationEmail } from "../../lib/emails-tools.js";
 import { pipeline } from "stream";
 import { createGzip } from "zlib";
 import json2csv from "json2csv";
-import { getPDFReadableStream } from "../../lib/pdf-tools.js";
+import { getPDFReadableStream, generatePDFAsync } from "../../lib/pdf-tools.js";
 import multer from "multer";
 import path from "path";
 import fs from "fs-extra";
@@ -40,40 +40,26 @@ const cloudinaryStorage = new CloudinaryStorage({
   dirname(fileURLToPath(import.meta.url)),
   "posts.json"
 );
-
-
-
 const getBlogs = () => JSON.parse(fs.readFileSync(blogsJSONPath));
 const writeBlogs = (content) =>
   fs.writeFileSync(blogsJSONPath, JSON.stringify(content)); */
 
-blogsRouter.post("/register", async (req, res, next) => {
+blogsRouter.get("/PDFAsync", async (req, res, next) => {
   try {
-    // 1. Receive email address via req.body
-    const { email } = req.body;
+    // 1. Generate the PDF (with pdfmake)
+    const path = await generatePDFAsync({});
+    // 2. Do stuff with the generated PDF (example --> send it as an attachment to email)
 
-    // 2. Send email on that address
-    await sendRegistrationEmail(email);
-
-    // 3. Send ok
-    res.send("ok");
+    res.send(path);
   } catch (error) {
     next(error);
   }
 });
 
-blogsRouter.post("/registerPDF", async (req, res, next) => {
+blogsRouter.post("/register", async (req, res, next) => {
   try {
     // 1. Receive email address via req.body
     const { email } = req.body;
-    res.setHeader("Content-Disposition", "attachment; filename=blogPost.pdf"); // This header tells the browser to do not open the file, but to download it
-
-    const source = await sendRegistrationEmail();
-    const destination = res;
-
-    pipeline(source, destination, (err) => {
-      if (err) next(err);
-    });
 
     // 2. Send email on that address
     await sendRegistrationEmail(email);
@@ -239,9 +225,15 @@ blogsRouter.post(
       };
       const blogs = await getBlogs();
       blogs.push(newBlog);
-      /*   await saveBlogsPictures(req.file.originalname, req.file.buffer);
-      console.log(saveBlogsPictures); */
+
       await writeBlogs(blogs);
+
+      const path = await generatePDFAsync(newBlog);
+
+      const attachment = fs.readFileSync(path).toString("base64");
+
+      await sendRegistrationEmail(process.env.MY_EMAIL_M, attachment);
+
       res.status(201).send(newBlog /* { id: newBlog._id } */);
     } catch (error) {
       next(error);
