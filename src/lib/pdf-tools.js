@@ -104,7 +104,7 @@ export const generatePDFAsync = async (data) => {
 
   const printer = new PdfPrinter(fonts);
 
-  if (data.imageUrl) {
+  if (data.cover) {
     const base64UrlPDF = await convertImageBase64(data);
 
     let docDefinition = {

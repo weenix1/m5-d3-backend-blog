@@ -3,7 +3,8 @@ import sgMail from "@sendgrid/mail";
 sgMail.setApiKey(process.env.SEND_KEY);
 console.log(process.env.SEND_KEY);
 
-export const sendRegistrationEmail = async (recipientAddress, pdf, name) => {
+export const sendRegistrationEmail = async (recipientAddress, pdf, title) => {
+  console.log(pdf);
   const msg = {
     to: recipientAddress,
     from: process.env.SENDER_EMAIL,

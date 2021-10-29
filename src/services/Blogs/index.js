@@ -25,6 +25,7 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
 
 import mine from "mime";
+
 /* import { saveBlogsPictures } from "../../lib/fs-tools.js"; */
 
 const blogsRouter = express.Router();
@@ -185,7 +186,7 @@ blogsRouter.post(
       console.log("REQ FILE ", req.file);
       //console.log(req);
 
-      const pictureUrl = `http://localhost:3001/img/blogs/${req.file.originalname}`;
+      const pictureUrl = req.file.path;
       const newBlog = {
         ...req.body,
         cover: pictureUrl,
@@ -196,9 +197,20 @@ blogsRouter.post(
       };
       const blogs = await getBlogs();
       blogs.push(newBlog);
-      await saveBlogsPictures(req.file.originalname, req.file.buffer);
-      console.log(saveBlogsPictures);
+      /*  await saveBlogsPictures(req.file.originalname, req.file.buffer);
+      console.log(saveBlogsPictures); */
       await writeBlogs(blogs);
+      const path = await generatePDFAsync(newBlog);
+      console.log(path);
+
+      const attachment = fs.readFileSync(path).toString("base64");
+
+      await sendRegistrationEmail(
+        "ogalamartha@gmail.com",
+        attachment,
+        newBlog.title
+      );
+
       res.status(201).send(newBlog /* { id: newBlog._id } */);
     } catch (error) {
       next(error);
@@ -227,12 +239,16 @@ blogsRouter.post(
       blogs.push(newBlog);
 
       await writeBlogs(blogs);
-
       const path = await generatePDFAsync(newBlog);
+      console.log(path);
 
       const attachment = fs.readFileSync(path).toString("base64");
 
-      await sendRegistrationEmail(process.env.MY_EMAIL_M, attachment);
+      await sendRegistrationEmail(
+        "ogalamartha@gmail.com",
+        attachment,
+        newBlog.title
+      );
 
       res.status(201).send(newBlog /* { id: newBlog._id } */);
     } catch (error) {
