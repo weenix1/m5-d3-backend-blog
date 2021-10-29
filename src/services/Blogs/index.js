@@ -13,7 +13,10 @@ import {
   getBlogsReadableStream,
   /* savedBlogFolder, */
 } from "../../lib/fs-tools.js";
-import { sendRegistrationEmail } from "../../lib/emails-tools.js";
+import {
+  sendRegistrationEmail,
+  sendRegistrationEmailAttach,
+} from "../../lib/emails-tools.js";
 import { pipeline } from "stream";
 import { createGzip } from "zlib";
 import json2csv from "json2csv";
@@ -240,11 +243,11 @@ blogsRouter.post(
 
       await writeBlogs(blogs);
       const path = await generatePDFAsync(newBlog);
-      console.log(path);
+      console.log("here is path", path);
 
       const attachment = fs.readFileSync(path).toString("base64");
 
-      await sendRegistrationEmail(
+      await sendRegistrationEmailAttach(
         "ogalamartha@gmail.com",
         attachment,
         newBlog.title
