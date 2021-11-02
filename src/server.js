@@ -9,6 +9,7 @@ import {
 } from "./errorsHandler.js";
 import blogsRouter from "./services/Blogs/index.js";
 import { join } from "path";
+import createDefaultTables from "./db/create-tables.js";
 
 const publicFolderPath = join(process.cwd(), "./public");
 
@@ -44,6 +45,9 @@ const port = process.env.PORT;
 console.log(process.env);
 console.table(listEndpoints(server));
 
-server.listen(port, () => {
+server.listen(port, async () => {
   console.log("server running on port:", port);
+  await createDefaultTables();
 });
+
+server.on("error", console.log);

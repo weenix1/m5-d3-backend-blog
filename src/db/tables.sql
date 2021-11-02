@@ -1,0 +1,14 @@
+-- create users table
+
+CREATE TABLE IF NOT EXISTS
+	blogs(
+		id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+		name VARCHAR(50) NOT NULL,
+    description VARCHAR(50) NOT NULL,
+    brand VARCHAR(50) NOT NULL,
+		image_url VARCHAR(150),
+		price INT NOT NULL,
+    category VARCHAR(50) NOT NULL,
+		created_at TIMESTAMPTZ DEFAULT NOW(),
+		updated_at TIMESTAMPTZ DEFAULT NOW()
+	);

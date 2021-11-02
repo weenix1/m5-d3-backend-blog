@@ -37,6 +37,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "node-fetch": "^3.0.0",
     "pdfmake": "^0.2.2",
+    "pg": "^8.7.1",
     "swagger-ui-express": "^4.1.6",
     "uniqid": "^5.4.0",
     "yamljs": "^0.3.0"
